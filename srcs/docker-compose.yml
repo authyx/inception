@@ -1,0 +1,56 @@
+services:
+  nginx:
+    build:
+      dockerfile: Dockerfile
+      context: requirements/nginx
+    ports:
+      - "443:443"
+      # - "80:80"
+    networks:
+      - my_network
+  wordpress:
+    build:
+      dockerfile: Dockerfile
+      context: requirements/wordpress
+    networks:
+      - my_network
+    volumes:
+      - wp_data:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_NAME: ${MARIADB_DATABASE}
+      WORDPRESS_DB_USER: ${MARIADB_USER}
+      WORDPRESS_DB_PASSWORD: ${MARIADB_PASSWORD}
+  mariadb:
+    build:
+      dockerfile: Dockerfile
+      context: requirements/mariadb
+    networks:
+      - my_network
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+  
+
+networks:
+  my_network:
+    driver: bridge
+
+volumes:
+  # later I will change the path to /home/user/data/...
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/authyx/Documents/42/inception/srcs/volumes/db_data
+      o: bind
+  wp_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/authyx/Documents/42/inception/srcs/volumes/wp_data
+      o: bind
