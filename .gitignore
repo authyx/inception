@@ -1,0 +1,15 @@
+# Ignore subject files
+*subject*
+
+# Ignore environment files
+.env
+srcs/.env
+
+# Ignore common temporary files
+*.log
+*.tmp
+*~
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
