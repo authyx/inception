@@ -9,7 +9,3 @@ srcs/.env
 *.log
 *.tmp
 *~
-
-# Ignore OS generated files
-.DS_Store
-Thumbs.db
