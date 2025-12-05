@@ -1,19 +1,23 @@
-# Start mariadb daemon in background without networking for initialization
-mariadbd --skip-networking &
+#!/bin/bash
+set -e
 
-# Wait for the server to be up
-sleep 5
+# Check if database is already initialized
+if [ ! -d "/var/lib/mysql/mysql" ]; then
+    echo "[init] Initializing MariaDB data directory"
+    mariadb-install-db --user=mysql --datadir=/var/lib/mysql
+fi
 
-# Execute SQL commands to create database, user, and grant privileges
-mysql -uroot <<-EOSQL
-  CREATE DATABASE IF NOT EXISTS `${MARIADB_DATABASE}`;
-  CREATE USER IF NOT EXISTS '${MARIADB_USER}'@'%' IDENTIFIED BY '${MARIADB_PASSWORD}';
-  GRANT ALL PRIVILEGES ON `${MARIADB_DATABASE}`.* TO '${MARIADB_USER}'@'%';
-  FLUSH PRIVILEGES;
+# Start MySQL temporarily for setup
+echo "[init] Starting MariaDB for configuration"
+mysqld --user=mysql --bootstrap --skip-networking <<-EOSQL
+    USE mysql;
+    FLUSH PRIVILEGES;
+    ALTER USER 'root'@'localhost' IDENTIFIED BY '${MARIADB_ROOT_PASSWORD}';
+    CREATE DATABASE IF NOT EXISTS \`${MARIADB_DATABASE}\`;
+    CREATE USER IF NOT EXISTS '${MARIADB_USER}'@'%' IDENTIFIED BY '${MARIADB_PASSWORD}';
+    GRANT ALL PRIVILEGES ON \`${MARIADB_DATABASE}\`.* TO '${MARIADB_USER}'@'%';
+    FLUSH PRIVILEGES;
 EOSQL
 
-# After your SQL commands, add:
-mysqladmin -uroot shutdown
-
-# Then start the final process:
-exec mariadbd --user=mysql
+echo "[init] Starting MariaDB server"
+exec mysqld --user=mysql --datadir=/var/lib/mysql
