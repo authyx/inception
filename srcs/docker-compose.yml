@@ -8,19 +8,31 @@ services:
       # - "80:80"
     networks:
       - my_network
+    depends_on:
+      - wordpress
+    volumes:
+      - ./volumes/wp_data:/var/www/html:ro # Read-only mount for nginx
+      - ./requirements/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./requirements/nginx/ssl:/etc/nginx/ssl:ro
+    restart: always
+
   wordpress:
     build:
       dockerfile: Dockerfile
       context: requirements/wordpress
     networks:
       - my_network
+    depends_on:
+      - mariadb
     volumes:
-      - wp_data:/var/www/html
+      - ./volumes/wp_data:/var/www/html
     environment:
       WORDPRESS_DB_HOST: mariadb
       WORDPRESS_DB_NAME: ${MARIADB_DATABASE}
       WORDPRESS_DB_USER: ${MARIADB_USER}
       WORDPRESS_DB_PASSWORD: ${MARIADB_PASSWORD}
+    restart: always
+
   mariadb:
     build:
       dockerfile: Dockerfile
@@ -28,29 +40,19 @@ services:
     networks:
       - my_network
     volumes:
-      - db_data:/var/lib/mysql
+      - ./volumes/db_data:/var/lib/mysql
     environment:
       MARIADB_DATABASE: ${MARIADB_DATABASE}
       MARIADB_USER: ${MARIADB_USER}
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
-  
+    restart: always
 
 networks:
   my_network:
     driver: bridge
 
-volumes:
-  # later I will change the path to /home/user/data/...
-  db_data:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/authyx/Documents/42/inception/srcs/volumes/db_data
-      o: bind
-  wp_data:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/authyx/Documents/42/inception/srcs/volumes/wp_data
-      o: bind
+# volumes:
+#     volumes:
+#     - db_data:/var/lib/mysql
+#     - wp_data:/var/www/html_data
