@@ -12,7 +12,7 @@ RUN mkdir -p /etc/nginx/ssl && \
     -out /etc/nginx/ssl/cert.pem \
     -subj "/C=MA/ST=Rabat/L=Rabat/O=1337/CN=yel-bouz.42.fr"
 
-COPY conf /etc/nginx/sites-available/default
+COPY conf/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 443
 
