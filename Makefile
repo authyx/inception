@@ -1,22 +1,21 @@
 # Created by yel-bouz.
 
-SRCS_DIR	=	srcs/
+all: build
 
-all : build
+build:
+	cd srcs && docker-compose build
 
-build :
-	docker build -t inception .
+up:
+	cd srcs && docker-compose up -d
 
-run :
-	docker run -d -p 80:80 --name inception inception
+down:
+	cd srcs && docker-compose down
 
-stop :
-	docker stop inception
+clean: down
 
-clean :
-	docker rm -f inception
-	docker rmi -f inception
+iamverysurewanttodeletethis:
+	cd srcs && docker-compose down -v
 
-reload : stop clean build run
+re: clean build up
 
-.PHONY : all build run stop clean reload
+.PHONY: all build up down clean re
