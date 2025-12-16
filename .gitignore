@@ -1,6 +1,8 @@
 # Ignore subject files
 *subject*
 
+secrets/
+
 # Ignore environment files
 .env
 srcs/.env
