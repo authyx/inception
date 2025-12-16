@@ -66,12 +66,12 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/yel-bouz/data/wp_data
+      device: ${HOST_DATA_ROOT}/wp_data
       o: bind
   
   db_data:
     driver: local
     driver_opts:
       type: none
-      device: /home/yel-bouz/data/db_data
+      device: ${HOST_DATA_ROOT}/db_data
       o: bind
