@@ -11,7 +11,7 @@ This project is a **Docker-based deployment** of a web application stack with **
 **Prerequisites**:
 - Docker & Docker Compose installed
 - Make utility
-- Linux VM (required per project specifications)
+- Linux VM
 
 **Setup & Execution**:
 1. Clone the repository: `git clone <repo-url>`
@@ -70,10 +70,10 @@ This makes Docker ideal for development and lightweight deployments.
 
 ### Secrets vs Environment Variables
 In this project:
-- **Environment variables** (`.env`): Used for non-sensitive config (domain, database names). Stored in plain text; must NOT be committed to git.
-- **Docker secrets** (optional `/secrets/`): Best practice for passwords, API keys. Encrypted and managed by Docker.
+- **Environment variables** (`.env`): Used for non-sensitive config (domain, database names, usernames). Must NOT be committed to git.
+- **Docker secrets** (`/secrets/`): Used for all passwords and sensitive data (DB passwords, WP passwords). Files are mounted to `/run/secrets/` inside containers. Git-ignored for security.
 
-**Choice**: We use `.env` for simplicity in development but recommend `/secrets/` for production.
+**Choice**: We use Docker secrets for all credentials and `.env` for non-sensitive configuration.
 ### Docker Network vs Host Network
 In this project:
 - **Custom bridge network** (`my_network`): Services communicate securely, isolated from host. Each service gets a hostname (nginx, wordpress, mariadb). **Used here.**

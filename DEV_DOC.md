@@ -3,8 +3,13 @@
 ## Prerequisites & Environment Setup
 - OS: Linux VM (project must be done inside a VM).
 - Tools: Docker, Docker Compose, Make.
-- Clone repo; ensure `srcs/.env` is created (not committed) with DB/WP variables and `HOST_DATA_ROOT` (default `/home/yel-bouz/data`).
-- (Optional) Create `/secrets/` (git-ignored) to store credentials if using Docker secrets.
+- Clone repo; ensure `srcs/.env` is created (not committed) with non-sensitive variables: `DOMAIN_NAME`, `HOST_DATA_ROOT`, `MARIADB_DATABASE`, `MARIADB_USER`, `WP_ADMIN_USER`, `WP_ADMIN_EMAIL`, etc.
+- **Required**: Create `secrets/` directory at project root with password files:
+  - `secrets/db_password.txt`
+  - `secrets/db_root_password.txt`
+  - `secrets/wp_admin_password.txt`
+  - `secrets/wp_user_password.txt`
+- The `secrets/` directory is git-ignored and uses Docker secrets mechanism to securely pass credentials to containers.
 
 ## Build & Launch
 From repository root:

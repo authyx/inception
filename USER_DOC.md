@@ -15,11 +15,15 @@ From the repository root:
 - Admin panel: https://yel-bouz.1337.ma/wp-admin
 
 # Credentials (location & management)
-- Environment values are in `srcs/.env` (should NOT be committed to git).
+- **Non-sensitive config** (usernames, database names, domain): `srcs/.env` (git-ignored)
+- **Passwords & secrets**: `secrets/` directory at project root (git-ignored):
+  - `secrets/db_password.txt` - MariaDB user password
+  - `secrets/db_root_password.txt` - MariaDB root password
+  - `secrets/wp_admin_password.txt` - WordPress admin password
+  - `secrets/wp_user_password.txt` - WordPress regular user password
 - Database and WP data live on host bind mounts at `${HOST_DATA_ROOT}` (default `/home/yel-bouz/data`):
 	- WordPress files: `${HOST_DATA_ROOT}/wp_data`
 	- MariaDB data: `${HOST_DATA_ROOT}/db_data`
-- If using secrets, store them in `/secrets/` (git-ignored).
 
 # Checking service health
 - Container status: `cd srcs && docker compose ps`
