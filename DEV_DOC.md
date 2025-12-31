@@ -4,11 +4,11 @@
 - OS: Linux VM (project must be done inside a VM).
 - Tools: Docker, Docker Compose, Make.
 - Clone repo; ensure `srcs/.env` is created (not committed) with non-sensitive variables: `DOMAIN_NAME`, `HOST_DATA_ROOT`, `MARIADB_DATABASE`, `MARIADB_USER`, `WP_ADMIN_USER`, `WP_ADMIN_EMAIL`, etc.
-- **Required**: Create `secrets/` directory at project root with password files:
-  - `secrets/db_password.txt`
-  - `secrets/db_root_password.txt`
-  - `secrets/wp_admin_password.txt`
-  - `secrets/wp_user_password.txt`
+- **Required**: Create `secrets/` directory at project root with password files (each file contains **only the password string**, one per file):
+	- `secrets/db_password.txt`
+	- `secrets/db_root_password.txt`
+	- `secrets/wp_admin_password.txt`
+	- `secrets/wp_user_password.txt`
 - The `secrets/` directory is git-ignored and uses Docker secrets mechanism to securely pass credentials to containers.
 
 ## Build & Launch

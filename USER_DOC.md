@@ -16,7 +16,7 @@ From the repository root:
 
 # Credentials (location & management)
 - **Non-sensitive config** (usernames, database names, domain): `srcs/.env` (git-ignored)
-- **Passwords & secrets**: `secrets/` directory at project root (git-ignored):
+- **Passwords & secrets**: `secrets/` directory at project root (git-ignored). Each secret file contains **only the password string**, e.g.:
   - `secrets/db_password.txt` - MariaDB user password
   - `secrets/db_root_password.txt` - MariaDB root password
   - `secrets/wp_admin_password.txt` - WordPress admin password

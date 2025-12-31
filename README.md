@@ -71,7 +71,7 @@ This makes Docker ideal for development and lightweight deployments.
 ### Secrets vs Environment Variables
 In this project:
 - **Environment variables** (`.env`): Used for non-sensitive config (domain, database names, usernames). Must NOT be committed to git.
-- **Docker secrets** (`/secrets/`): Used for all passwords and sensitive data (DB passwords, WP passwords). Files are mounted to `/run/secrets/` inside containers. Git-ignored for security.
+- **Docker secrets** (`/secrets/`): Used for all passwords and sensitive data (DB passwords, WP passwords). Each secret file contains **only the password string** (one value per file) and is mounted to `/run/secrets/` inside containers. Git-ignored for security.
 
 **Choice**: We use Docker secrets for all credentials and `.env` for non-sensitive configuration.
 ### Docker Network vs Host Network
