@@ -1,6 +1,17 @@
 #!/bin/bash
 set -e
 
+# Read passwords from Docker secrets
+if [ -f "$WORDPRESS_DB_PASSWORD_FILE" ]; then
+    WORDPRESS_DB_PASSWORD=$(cat "$WORDPRESS_DB_PASSWORD_FILE")
+fi
+if [ -f "$WP_ADMIN_PASSWORD_FILE" ]; then
+    WP_ADMIN_PASSWORD=$(cat "$WP_ADMIN_PASSWORD_FILE")
+fi
+if [ -f "$WP_USER_PASSWORD_FILE" ]; then
+    WP_USER_PASSWORD=$(cat "$WP_USER_PASSWORD_FILE")
+fi
+
 # Copy WordPress files to volume if not already present
 if [ ! -f "/var/www/html/index.php" ]; then
     echo "[wordpress] Installing WordPress to /var/www/html"

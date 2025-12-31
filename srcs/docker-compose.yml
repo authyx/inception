@@ -1,80 +1,97 @@
 services:
-  nginx:
-    image: nginx
-    build:
-      dockerfile: Dockerfile
-      context: requirements/nginx
-      args:
-        DOMAIN_NAME: ${DOMAIN_NAME}
-    ports:
-      - "443:443"
-      # - "80:80"
-    networks:
-      - my_network
-    depends_on:
-      - wordpress
-    volumes:
-      - wp_data:/var/www/html:ro # Read-only mount for nginx
-      - ./requirements/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
-    restart: always
+    nginx:
+        image: nginx
+        build:
+            dockerfile: Dockerfile
+            context: requirements/nginx
+            args:
+                DOMAIN_NAME: ${DOMAIN_NAME}
+        ports:
+            - "443:443"
+            # - "80:80"
+        networks:
+            - my_network
+        depends_on:
+            - wordpress
+        volumes:
+            - wp_data:/var/www/html:ro # Read-only mount for nginx
+            - ./requirements/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+        restart: always
 
-  wordpress:
-    image: wordpress
-    build:
-      dockerfile: Dockerfile
-      context: requirements/wordpress
-    networks:
-      - my_network
-    depends_on:
-      - mariadb
-    volumes:
-      - wp_data:/var/www/html
-    environment:
-      WORDPRESS_DB_HOST: mariadb
-      WORDPRESS_DB_NAME: ${MARIADB_DATABASE}
-      WORDPRESS_DB_USER: ${MARIADB_USER}
-      WORDPRESS_DB_PASSWORD: ${MARIADB_PASSWORD}
-      WP_ADMIN_USER: ${WP_ADMIN_USER}
-      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
-      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
-      WP_USER: ${WP_USER}
-      WP_USER_PASSWORD: ${WP_USER_PASSWORD}
-      WP_USER_EMAIL: ${WP_USER_EMAIL}
-      WP_SITE_TITLE: ${WP_SITE_TITLE}
-      WP_SITE_URL: ${WP_SITE_URL}
-    restart: always
+    wordpress:
+        image: wordpress
+        build:
+            dockerfile: Dockerfile
+            context: requirements/wordpress
+        networks:
+            - my_network
+        depends_on:
+            - mariadb
+        volumes:
+            - wp_data:/var/www/html
+        environment:
+            WORDPRESS_DB_HOST: mariadb
+            WORDPRESS_DB_NAME: ${MARIADB_DATABASE}
+            WORDPRESS_DB_USER: ${MARIADB_USER}
+            WORDPRESS_DB_PASSWORD_FILE: /run/secrets/db_password
+            WP_ADMIN_USER: ${WP_ADMIN_USER}
+            WP_ADMIN_PASSWORD_FILE: /run/secrets/wp_admin_password
+            WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+            WP_USER: ${WP_USER}
+            WP_USER_PASSWORD_FILE: /run/secrets/wp_user_password
+            WP_USER_EMAIL: ${WP_USER_EMAIL}
+            WP_SITE_TITLE: ${WP_SITE_TITLE}
+            WP_SITE_URL: ${WP_SITE_URL}
+        secrets:
+            - db_password
+            - wp_admin_password
+            - wp_user_password
+        restart: always
 
-  mariadb:
-    image: mariadb
-    build:
-      dockerfile: Dockerfile
-      context: requirements/mariadb
-    networks:
-      - my_network
-    volumes:
-      - db_data:/var/lib/mysql
-    environment:
-      MARIADB_DATABASE: ${MARIADB_DATABASE}
-      MARIADB_USER: ${MARIADB_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
-    restart: always
+    mariadb:
+        image: mariadb
+        build:
+            dockerfile: Dockerfile
+            context: requirements/mariadb
+        networks:
+            - my_network
+        volumes:
+            - db_data:/var/lib/mysql
+        environment:
+            MARIADB_DATABASE: ${MARIADB_DATABASE}
+            MARIADB_USER: ${MARIADB_USER}
+            MARIADB_PASSWORD_FILE: /run/secrets/db_password
+            MARIADB_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+        secrets:
+            - db_password
+            - db_root_password
+        restart: always
+
+secrets:
+    db_password:
+        file: ../secrets/db_password.txt
+    db_root_password:
+        file: ../secrets/db_root_password.txt
+    wp_admin_password:
+        file: ../secrets/wp_admin_password.txt
+    wp_user_password:
+        file: ../secrets/wp_user_password.txt
 
 networks:
-  my_network:
-    driver: bridge
+    my_network:
+        driver: bridge
 
 volumes:
-  wp_data:
-    driver: local
-    driver_opts:
-      type: none
-      device: ${HOST_DATA_ROOT}/wp_data
-      o: bind
-  
-  db_data:
-    driver: local
-    driver_opts:
-      type: none
-      device: ${HOST_DATA_ROOT}/db_data
-      o: bind
+    wp_data:
+        driver: local
+        driver_opts:
+            type: none
+            device: ${HOST_DATA_ROOT}/wp_data
+            o: bind
+
+    db_data:
+        driver: local
+        driver_opts:
+            type: none
+            device: ${HOST_DATA_ROOT}/db_data
+            o: bind

@@ -1,6 +1,14 @@
 #!/bin/bash
 set -e
 
+# Read passwords from Docker secrets
+if [ -f "$MARIADB_PASSWORD_FILE" ]; then
+    MARIADB_PASSWORD=$(cat "$MARIADB_PASSWORD_FILE")
+fi
+if [ -f "$MARIADB_ROOT_PASSWORD_FILE" ]; then
+    MARIADB_ROOT_PASSWORD=$(cat "$MARIADB_ROOT_PASSWORD_FILE")
+fi
+
 # Check if database is already initialized
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     echo "[init] Initializing MariaDB data directory"
