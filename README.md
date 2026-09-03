@@ -1,8 +1,14 @@
-*This project has been created as part of the 42 curriculum by yel-bouz*
+*Built as part of the 42 curriculum by authyx.*
 
 # Description
 
 This project is a **Docker-based deployment** of a web application stack with **Nginx**, **MariaDB**, and **WordPress**. It provides a fully containerized local development and production-ready environment that mimics a real-world web server setup.
+
+**Tech stack:** Docker, Docker Compose, Nginx, MariaDB, WordPress, TLS (self-signed), Debian bookworm.
+
+## What I learned
+
+Learned Docker end-to-end: containerizing services, wiring them together on a custom bridge network, managing secrets properly (Docker secrets for credentials, `.env` for non-sensitive config — never commit passwords), and setting up TLS on Nginx. The architecture comparison section (containers vs VMs, bridge vs host network, volumes vs bind mounts) comes from actually having to make those choices and justify them — not just reading about them. Set up WordPress + MariaDB + Nginx from scratch with no pre-made images beyond the official base ones.
 
 **Goal**: Learn and practice Docker concepts by building a multi-container infrastructure with networking, volumes, and environment management.
 
@@ -18,7 +24,7 @@ This project is a **Docker-based deployment** of a web application stack with **
 2. Navigate to project root: `cd inception`
 3. Create `srcs/.env` file with required variables (see `USER_DOC.md`)
 4. Build and start services: `make up` (equivalent to `make build && make up`)
-5. Access WordPress at: `https://localhost` (or `https://yel-bouz.1337.ma` with DNS)
+5. Access WordPress at: `https://localhost`
 6. Access WordPress admin at: `https://localhost/wp-admin`
 7. Stop services: `make down`
 8. For more commands: see `USER_DOC.md` and `DEV_DOC.md`
